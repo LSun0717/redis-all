@@ -1,5 +1,6 @@
 package com.lions.redisall.service;
 
+import com.lions.redisall.dto.Result;
 import com.lions.redisall.entity.VoucherOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -9,4 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IVoucherOrderService extends IService<VoucherOrder> {
 
+    Result flashSaleVoucher(Long voucherId);
 }

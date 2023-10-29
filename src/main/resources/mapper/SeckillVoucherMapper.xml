@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lions.redisall.mapper.SeckillVoucherMapper">
+    <select id="selectById" resultType="com.lions.redisall.entity.SeckillVoucher" parameterType="java.lang.Long">
+        SELECT
+            *
+        FROM tb_seckill_voucher tsv
+        WHERE tsv.voucher_id = #{id}
+    </select>
+
+    <update id="updateStockByVoucherId">
+        UPDATE tb_seckill_voucher tsv
+        SET tsv.stock = tsv.stock - 1
+        where tsv.voucher_id = #{id} and tsv.stock > 0
+    </update>
+</mapper>
