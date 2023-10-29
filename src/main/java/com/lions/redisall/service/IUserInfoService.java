@@ -4,12 +4,8 @@ import com.lions.redisall.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-24
+ * IUserInfoService
+ * 业务逻辑层
  */
 public interface IUserInfoService extends IService<UserInfo> {
 

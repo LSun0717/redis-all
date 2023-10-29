@@ -3,7 +3,7 @@ package com.lions.redisall.utils;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author 虎哥
+ * 正则表达式工具类
  */
 public class RegexUtils {
     /**

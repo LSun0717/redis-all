@@ -6,12 +6,8 @@ import com.lions.redisall.dto.Result;
 import com.lions.redisall.entity.User;
 
 /**
- * <p>
- *  服务类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
+ * IUserService
+ * 业务逻辑层
  */
 public interface IUserService extends IService<User> {
 

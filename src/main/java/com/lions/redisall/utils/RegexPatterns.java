@@ -1,7 +1,7 @@
 package com.lions.redisall.utils;
 
 /**
- * @author 虎哥
+ * 正则表达式Pattern
  */
 public abstract class RegexPatterns {
     /**
