@@ -24,4 +24,4 @@ mybatis-plus:
   type-aliases-package: com.lions.redisall.entity # 别名扫描包
 logging:
   level:
-    com.hmdp: debug
+    com.lions.redisall: debug

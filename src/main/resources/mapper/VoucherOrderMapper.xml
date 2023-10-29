@@ -7,4 +7,11 @@
             id, user_id, voucher_id
         ) VALUES(#{id}, #{userId}, #{voucherId})
     </insert>
+
+    <select id="countByIdAndVId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM tb_voucher_order
+        WHERE user_id = #{userId} and voucher_id = #{voucherId}
+    </select>
 </mapper>

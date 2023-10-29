@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lions.redisall.utils.RedisIDGenerator;
 import com.lions.redisall.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,6 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
      * @return 秒杀优惠卷订单id
      */
     @Override
-    @Transactional
     public Result flashSaleVoucher(Long voucherId) {
         // 1.查询优惠券
         SeckillVoucher seckillVoucher = seckillVoucherMapper.selectById(voucherId);
@@ -50,20 +50,44 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         if (seckillVoucher.getStock() < 1) {
             return Result.fail("优惠卷已经被抢完啦！欢迎下次参与");
         }
-        // 5.扣减库存(CAS，版本号机制)
+        // 5.互斥锁，防止并发创建
+        Long userId = UserHolder.getUser().getId();
+        synchronized (userId.toString().intern()) {
+            // 6 解决事务注解失效问题
+            IVoucherOrderService currentProxy = (IVoucherOrderService) AopContext.currentProxy();
+            // 7 创建订单
+            Result voucherOrderId = currentProxy.createVoucherOrderUnique(voucherId);
+            // 8.返回订单id
+            return Result.ok(voucherOrderId);
+        }
+    }
+
+    /**
+     * 创建优惠卷订单，结合一人一单校验
+     * @param voucherId 优惠卷id
+     * @return 优惠卷订单id
+     */
+    @Transactional
+    @Override
+    public Result createVoucherOrderUnique(Long voucherId) {
+        // 7.1一人一单校验
+        Long userId = UserHolder.getUser().getId();
+        int count = voucherOrderMapper.countByIdAndVId(userId, voucherId);
+        if (count > 0) {
+            return Result.fail("优惠卷一人仅限一张");
+        }
+        // 7.2扣减库存(CAS，版本号机制)
         boolean updateSuccess = seckillVoucherMapper.updateStockByVoucherId(voucherId);
         if (!updateSuccess) {
             return Result.fail("优惠卷抢购失败");
         }
-        // 6.创建订单
+        // 7.3.创建订单
         VoucherOrder voucherOrder = new VoucherOrder();
         Long voucherOrderId = redisIDGenerator.nextId("order");
-        Long userId = UserHolder.getUser().getId();
         voucherOrder.setId(voucherOrderId);
         voucherOrder.setUserId(userId);
         voucherOrder.setVoucherId(voucherId);
         boolean insertFlag = voucherOrderMapper.insertVoucherOrder(voucherOrder);
-        // 7.返回订单id
         return Result.ok(voucherOrderId);
     }
 }
