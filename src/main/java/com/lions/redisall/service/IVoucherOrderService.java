@@ -15,7 +15,7 @@ public interface IVoucherOrderService extends IService<VoucherOrder> {
      * @param voucherId 秒杀优惠券id
      * @return 秒杀优惠卷订单id
      */
-    Result flashSaleVoucher(Long voucherId);
+    Result flashSaleVoucherByLua(Long voucherId);
 
     /**
      * 创建优惠卷订单
@@ -23,4 +23,10 @@ public interface IVoucherOrderService extends IService<VoucherOrder> {
      * @return 优惠卷订单id
      */
     Result createVoucherOrderUnique(Long voucherId);
+
+    /**
+     * 解决事务失效，真实创建订单handler
+     * @param voucherOrder 订单信息
+     */
+    void createVoucherOrderAscHandler(VoucherOrder voucherOrder);
 }

@@ -20,8 +20,8 @@ public class VoucherOrderController {
     private IVoucherOrderService iVoucherOrderService;
 
     @PostMapping("seckill/{id}")
-    public Result seckillVoucher(@PathVariable("id") Long voucherId) {
-        Result result = iVoucherOrderService.flashSaleVoucher(voucherId);
+    public Result flashSaleVoucher(@PathVariable("id") Long voucherId) {
+        Result result = iVoucherOrderService.flashSaleVoucherByLua(voucherId);
         return result;
     }
 }

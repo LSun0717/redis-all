@@ -8,13 +8,6 @@
 - 缓存雪崩解决方案（过期时间离散化）
 - 缓存预热与缓存构建
 - 基于 INCR 实现分布式id（32位时间戳 + 32位序列号）
-- 秒杀(超卖、一人一单)
-  - 乐观锁
-    - version版本号(stock > 0)：成功率低
-    - CAS
-  - 悲观锁
-    - synchronized
-    - select... for update
 - 分布式锁（SET lockName lockOwner EX 10 NX）
   - 解决线程故障，无法释放锁（TTL）
   - 解决其他线程误释放锁
@@ -25,7 +18,26 @@
     - 不可重试（阻塞）
     - 超时释放（业务执行过长，锁却已经释放）
     - 主从一致性
-
+- Redisson
+  - 分布式锁（可重、可重试、超时释放、主从一致性）
+  - watch dog（看门狗机制自动续期）
+  - RedLock
+- 秒杀(超卖、一人一单)
+- 同步版本
+  - 乐观锁
+    - version版本号(stock > 0)：成功率低
+    - CAS
+  - 悲观锁
+    - synchronized
+    - select... for update
+- 异步版本
+  - Redisson分布式锁
+  - BlockQueue阻塞队列
+  - ThreadPoolExecutor线程池
+  - Lua脚本
+    - Set解决一人一单
+    - Incr库存扣减
+    - 防止超卖
 # 技术选型
 - 基础框架
   - SpringBoot
