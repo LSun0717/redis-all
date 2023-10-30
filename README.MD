@@ -15,6 +15,16 @@
   - 悲观锁
     - synchronized
     - select... for update
+- 分布式锁（SET lockName lockOwner EX 10 NX）
+  - 解决线程故障，无法释放锁（TTL）
+  - 解决其他线程误释放锁
+    - 线程误删（UUID+threadId）
+    - 查询与删除非原子性操作（Lua 脚本）
+  - 缺陷
+    - 不可重入
+    - 不可重试（阻塞）
+    - 超时释放（业务执行过长，锁却已经释放）
+    - 主从一致性
 
 # 技术选型
 - 基础框架

@@ -8,6 +8,7 @@ import com.lions.redisall.mapper.VoucherOrderMapper;
 import com.lions.redisall.service.IVoucherOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lions.redisall.utils.RedisIDGenerator;
+import com.lions.redisall.utils.SimpleDLock;
 import com.lions.redisall.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -50,15 +51,23 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         if (seckillVoucher.getStock() < 1) {
             return Result.fail("优惠卷已经被抢完啦！欢迎下次参与");
         }
-        // 5.互斥锁，防止并发创建
+
+        // 5.Redis分布式锁，防止并发创建
         Long userId = UserHolder.getUser().getId();
-        synchronized (userId.toString().intern()) {
+        SimpleDLock simpleDLock = new SimpleDLock("order:" + userId);
+        boolean lockSuccess = simpleDLock.tryLock(1200);
+        if (!lockSuccess) {
+            return Result.fail("不允许重复下单");
+        }
+        try {
             // 6 解决事务注解失效问题
             IVoucherOrderService currentProxy = (IVoucherOrderService) AopContext.currentProxy();
             // 7 创建订单
             Result voucherOrderId = currentProxy.createVoucherOrderUnique(voucherId);
             // 8.返回订单id
             return Result.ok(voucherOrderId);
+        } finally {
+            simpleDLock.unLock();
         }
     }
 
