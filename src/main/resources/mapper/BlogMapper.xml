@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lions.redisall.mapper.BlogMapper">
+    <update id="updateLikedById">
+        UPDATE tb_blog
+        SET liked = liked + #{likeNum}
+        WHERE id = #{id}
+    </update>
+
+    <select id="queryBlogById" resultType="com.lions.redisall.entity.Blog">
+        SELECT *
+        FROM tb_blog
+        WHERE id = #{id}
+    </select>
+
+</mapper>

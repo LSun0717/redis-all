@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.lions.redisall.dto.UserDTO;
 import com.lions.redisall.utils.RedisConstants;
-import com.lions.redisall.utils.UserHolder;
+import com.lions.redisall.utils.UserContext;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -42,7 +42,7 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
         // 已登录，Redis保存用户信息，刷新token
         UserDTO userDTO = new UserDTO();
         BeanUtil.fillBeanWithMap(userMap, userDTO, false);
-        UserHolder.saveUser(userDTO);
+        UserContext.saveUser(userDTO);
         stringRedisTemplate.expire(RedisConstants.LOGIN_USER_KEY + token, RedisConstants.LOGIN_USER_TTL, TimeUnit.MINUTES);
         // 放行
         return true;
@@ -50,6 +50,6 @@ public class RefreshTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        UserHolder.removeUser();
+        UserContext.removeUser();
     }
 }

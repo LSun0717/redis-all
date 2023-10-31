@@ -7,7 +7,7 @@ import com.lions.redisall.dto.UserDTO;
 import com.lions.redisall.entity.UserInfo;
 import com.lions.redisall.service.IUserInfoService;
 import com.lions.redisall.service.IUserService;
-import com.lions.redisall.utils.UserHolder;
+import com.lions.redisall.utils.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,7 +59,7 @@ public class UserController {
     @GetMapping("/me")
     public Result me(){
         // TODO 获取当前登录的用户并返回
-        UserDTO user = UserHolder.getUser();
+        UserDTO user = UserContext.getUser();
         return Result.ok(user);
     }
 

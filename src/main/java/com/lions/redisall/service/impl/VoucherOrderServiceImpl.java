@@ -9,7 +9,7 @@ import com.lions.redisall.service.IVoucherOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lions.redisall.utils.RedisIDGenerator;
 import com.lions.redisall.utils.SimpleDLock;
-import com.lions.redisall.utils.UserHolder;
+import com.lions.redisall.utils.UserContext;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -78,7 +78,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     @Override
     public Result flashSaleVoucherByLua(Long voucherId) {
         // 1.执行Lua脚本，判断能否成功下单独
-        Long userId = UserHolder.getUser().getId();
+        Long userId = UserContext.getUser().getId();
         Long isValidOrder = stringRedisTemplate.execute(
                 VALID_ORDER_SCRIPT,
                 Collections.emptyList(),
@@ -200,7 +200,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         }
 
         // 5.Redis分布式锁，防止并发创建
-        Long userId = UserHolder.getUser().getId();
+        Long userId = UserContext.getUser().getId();
         SimpleDLock simpleDLock = new SimpleDLock("order:" + userId);
         boolean lockSuccess = simpleDLock.tryLock(1200);
         if (!lockSuccess) {
@@ -227,7 +227,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     @Override
     public Result createVoucherOrderUnique(Long voucherId) {
         // 7.1一人一单校验
-        Long userId = UserHolder.getUser().getId();
+        Long userId = UserContext.getUser().getId();
         int count = voucherOrderMapper.countByIdAndVId(userId, voucherId);
         if (count > 0) {
             return Result.fail("优惠卷一人仅限一张");

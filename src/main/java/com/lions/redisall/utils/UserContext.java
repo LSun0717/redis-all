@@ -5,7 +5,7 @@ import com.lions.redisall.dto.UserDTO;
 /**
  * ThreadLocal 线程私有context
  */
-public class UserHolder {
+public class UserContext {
     private static final ThreadLocal<UserDTO> tl = new ThreadLocal<>();
 
     public static void saveUser(UserDTO user){

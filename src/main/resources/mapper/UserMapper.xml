@@ -5,4 +5,20 @@
     <select id="findUserByPhone" resultType="com.lions.redisall.entity.User" parameterType="java.lang.String">
         select * from tb_user where phone = #{phone}
     </select>
+    <select id="queryUserById" resultType="com.lions.redisall.entity.User">
+        SELECT *
+        FROM tb_user
+        WHERE id = #{id}
+    </select>
+    <select id="selectBatchByIds" resultType="com.lions.redisall.entity.User">
+        SELECT *
+        FROM tb_user
+        <where>
+            id in(
+            <foreach collection="userIds" item="userId" index="index" separator=",">
+                #{userId}
+            </foreach>
+            )
+        </where>
+    </select>
 </mapper>

@@ -1,7 +1,7 @@
 package com.lions.redisall.interceptor;
 
 import com.lions.redisall.dto.UserDTO;
-import com.lions.redisall.utils.UserHolder;
+import com.lions.redisall.utils.UserContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,7 +20,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        UserDTO userDTO = UserHolder.getUser();
+        UserDTO userDTO = UserContext.getUser();
         if (userDTO == null) {
             response.setStatus(401);
             return false;
