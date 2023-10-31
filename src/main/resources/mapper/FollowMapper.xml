@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lions.redisall.mapper.FollowMapper">
+    <insert id="insertFollow">
+        INSERT INTO
+            tb_follow(user_id, follow_user_id)
+        VALUES
+            (#{userId}, #{followUserId})
+    </insert>
+
+    <delete id="deleteFollow">
+        DELETE FROM tb_follow
+        WHERE user_id = #{bloggerId} AND follow_user_id = #{fansId}
+    </delete>
+
+    <select id="selectIsFollow" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM tb_follow
+        WHERE user_id = #{bloggerId} AND follow_user_id = #{fansId}
+    </select>
+</mapper>
